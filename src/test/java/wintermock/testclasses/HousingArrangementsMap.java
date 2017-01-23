@@ -1,8 +1,8 @@
 package wintermock.testclasses;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
-public class HousingArrangementsMap extends HashMap<Person,List<House>> {
+public class HousingArrangementsMap extends LinkedHashMap<Person, List<House>> {
 
 }

@@ -15,7 +15,11 @@ A tool to ...
   - Bullet point 2
   
 ##Restrictions
+- Impure functions that modify their arguments will not work well. 
 - Method parameters or return values containing Maps where the Key is not a simple JSON type will not work without some extra work.  See http://stackoverflow.com/questions/11246748/deserializing-non-string-map-keys-with-jackson for how to make Map<SomeType, SomeOtherType> work
+  - See PersonKeySerializer and PersonKeyDeserializer and PersonKeyJacksonModule for how this can be made to work for a java map of type Map<Person, ...>
+- Infinite Recursion
+  - http://www.baeldung.com/jackson-bidirectional-relationships-and-infinite-recursion
 
 ##Usage
 

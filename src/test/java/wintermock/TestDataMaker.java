@@ -23,7 +23,7 @@ public class TestDataMaker {
     }
 
     private static Map<Person, List<House>> newPersonHousingArrangements(List<Person> employees) {
-        HashMap<Person, List<House>> m = new HashMap<>();
+        HashMap<Person, List<House>> m = new LinkedHashMap<>();
         m.put(employees.get(0), newHouses());
         m.put(employees.get(1), null);
         m.put(employees.get(2), newHouses("Main Residence", "In Town", "The Holiday Cottage", "Nice Village"));
