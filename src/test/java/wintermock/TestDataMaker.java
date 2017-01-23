@@ -37,9 +37,9 @@ public class TestDataMaker {
         HousingArrangementsMap m = new HousingArrangementsMap();
         m.put(employees.get(0), newHouses());
         m.put(employees.get(1), null);
-        m.put(employees.get(2), newHouses("Main Residence", "In Town", "The Holiday Cottage", "Nice Village"));
-        m.put(employees.get(3), newHouses("Flat 1", "London Street"));
-        m.put(employees.get(4), newHouses("Town House", "Leith"));
+        m.put(employees.get(2), newHouses("The Hilton", "Bath"));
+        m.put(employees.get(3), newHouses("Humble Abode", "Denmark"));
+        m.put(employees.get(4), null);
         m.put(employees.get(5), newHouses());
         return m;
     }
