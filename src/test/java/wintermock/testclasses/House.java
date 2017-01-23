@@ -10,6 +10,9 @@ public class House {
         this.address = address;
     }
 
+    public House() {
+    }
+
     public String getName() {
         return name;
     }

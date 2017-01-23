@@ -1,7 +1,7 @@
 package wintermock.testclasses;
 
 public enum CountryWithCodeEnum {
-    UNITED_KINGDOM("GBR"), UNITED_STATED("USA"), FRANCE("FRA");
+    UNITED_KINGDOM("GBR"), UNITED_STATES("USA"), FRANCE("FRA");
 
     private String code;
 

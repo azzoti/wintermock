@@ -76,7 +76,13 @@ public class BasicFieldsType {
         this.bigBadDecimalField = bigBadDecimalField;
     }
 
-    public BasicFieldsType(int primitiveIntField, Integer integerField, String stringField, boolean primitiveBooleanField, Boolean booleanField, double primitiveDoubleField, Double doubleField, BigDecimal bigBadDecimalField) {
+    public BasicFieldsType(int primitiveIntField,
+                           Integer integerField,
+                           String stringField,
+                           boolean primitiveBooleanField, Boolean booleanField,
+                           double primitiveDoubleField, Double doubleField,
+                           BigDecimal bigBadDecimalField
+    ) {
         this.primitiveIntField = primitiveIntField;
         this.integerField = integerField;
         this.stringField = stringField;
@@ -85,5 +91,8 @@ public class BasicFieldsType {
         this.primitiveDoubleField = primitiveDoubleField;
         this.doubleField = doubleField;
         this.bigBadDecimalField = bigBadDecimalField;
+    }
+
+    public BasicFieldsType() {
     }
 }

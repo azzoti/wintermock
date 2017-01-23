@@ -5,6 +5,6 @@ import wintermock.testclasses.Person;
 
 public class InterfaceToMockRealImplementation implements InterfaceToMock {
     public Person pureFunctionReturningComplexType(String stringParam, boolean primitiveBooleanParam, ComplexType c1) {
-        return null;
+        return c1.getEmployees().get(5);
     }
 }

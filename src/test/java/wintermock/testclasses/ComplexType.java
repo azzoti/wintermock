@@ -21,7 +21,11 @@ public class ComplexType {
 
     private HousingArrangementsMap alternativeHousing;
 
-    public ComplexType(BasicFieldsType basicFields, DateFieldsType dateFields, List<String> simpleListOfStrings, String[] simpleArrayOfStrings, Person boss, List<Person> employees, Map<Person, List<House>> housing, HousingArrangementsMap alternativeHousing) {
+    public ComplexType(BasicFieldsType basicFields, DateFieldsType dateFields, List<String> simpleListOfStrings, String[] simpleArrayOfStrings,
+                       Person boss,
+                       List<Person> employees,
+                       Map<Person, List<House>> housing,
+                       HousingArrangementsMap alternativeHousing) {
         this.basicFields = basicFields;
         this.dateFields = dateFields;
         this.simpleListOfStrings = simpleListOfStrings;
@@ -30,6 +34,10 @@ public class ComplexType {
         this.employees = employees;
         this.housing = housing;
         this.alternativeHousing = alternativeHousing;
+    }
+
+
+    public ComplexType() {
     }
 
     public BasicFieldsType getBasicFields() {

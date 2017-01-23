@@ -1,5 +1,6 @@
 package wintermock.testclasses;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import java.util.Calendar;
@@ -9,12 +10,17 @@ public class DateFieldsType {
 
     private Date javaDateField;
     private LocalDate jodaLocalDateField;
+    private DateTime jodaDateTimeField;
     private Calendar javaCalendarField;
 
-    public DateFieldsType(Date javaDateField, LocalDate jodaLocalDateField, Calendar javaCalendarField) {
+    public DateFieldsType(Date javaDateField, LocalDate jodaLocalDateField, DateTime jodaDateTimeField, Calendar javaCalendarField) {
         this.javaDateField = javaDateField;
         this.jodaLocalDateField = jodaLocalDateField;
+        this.jodaDateTimeField = jodaDateTimeField;
         this.javaCalendarField = javaCalendarField;
+    }
+
+    public DateFieldsType() {
     }
 
     public Date getJavaDateField() {
@@ -41,5 +47,11 @@ public class DateFieldsType {
         this.javaCalendarField = javaCalendarField;
     }
 
+    public DateTime getJodaDateTimeField() {
+        return jodaDateTimeField;
+    }
 
+    public void setJodaDateTimeField(DateTime jodaDateTimeField) {
+        this.jodaDateTimeField = jodaDateTimeField;
+    }
 }
