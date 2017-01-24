@@ -88,7 +88,7 @@ public class TestDataMaker {
     private static BasicFieldsType newBasicFieldsType() {
         return new BasicFieldsType(Integer.MAX_VALUE, Integer.MIN_VALUE,
                 "A String {value} with embedded json [characters] in it ",
-                false, true, 1.1d, 1.2d, BigDecimal.TEN);
+                false, true, Double.MAX_VALUE, Double.MIN_VALUE, BigDecimal.TEN.setScale(2, BigDecimal.ROUND_HALF_UP));
     }
 
     private static Person newPerson(String personName, int age, ColorSimpleEnum eyeColor, CountryWithCodeEnum nationality) {

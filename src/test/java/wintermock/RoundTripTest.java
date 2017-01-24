@@ -1,11 +1,14 @@
 package wintermock;
 
+import static org.lazyluke.wintermock.StubbingHelper.getObjectMapper;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import org.junit.Assert;
 import org.junit.Test;
-import wintermock.extras.GenericKeyJacksonModule;
+import org.lazyluke.wintermock.jackson.GenericKeyJacksonModule;
+import org.lazyluke.wintermock.jackson.SimpleObjectMapperFactory;
 import wintermock.testclasses.ComplexType;
 import wintermock.testclasses.Person;
 
@@ -29,6 +32,12 @@ public class RoundTripTest {
 
     }
 
+    private ObjectMapper getObjectMapper() {
+        ObjectMapper mapper = SimpleObjectMapperFactory.createObjectMapper();
+        mapper.registerModule(new GenericKeyJacksonModule(Person.class, mapper));
+        return mapper;
+    }
+
     @Test
     public void name() throws Exception {
 
@@ -39,13 +48,7 @@ public class RoundTripTest {
 
     }
 
-    private ObjectMapper getObjectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        mapper.registerModule(new JodaModule());
-        mapper.registerModule(new GenericKeyJacksonModule(Person.class, mapper));
-        return mapper;
-    }
+
 
 
 }
