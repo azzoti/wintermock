@@ -10,7 +10,7 @@ import java.util.*;
 public class TestDataMaker {
 
 
-    static ComplexType newComplexType() {
+    public static ComplexType newComplexType() {
         BasicFieldsType basicFields = newBasicFieldsType();
         DateFieldsType dateFields = newDateFields();
         List<String> stringList = newStringList();
@@ -91,7 +91,7 @@ public class TestDataMaker {
                 false, true, Double.MAX_VALUE, Double.MIN_VALUE, BigDecimal.TEN.setScale(2, BigDecimal.ROUND_HALF_UP));
     }
 
-    private static Person newPerson(String personName, int age, ColorSimpleEnum eyeColor, CountryWithCodeEnum nationality) {
+    public static Person newPerson(String personName, int age, ColorSimpleEnum eyeColor, CountryWithCodeEnum nationality) {
         return new Person(personName, age, eyeColor, nationality);
     }
 
@@ -99,8 +99,8 @@ public class TestDataMaker {
         Calendar calendar = new GregorianCalendar(2013, 1, 28, 13, 24, 56);
         calendar.set(Calendar.MILLISECOND, 123456);
         Date javaDateField = new Date(calendar.getTimeInMillis());
-        LocalDate localDate = LocalDate.now();
-        DateTime dateTime = DateTime.now();
+        LocalDate localDate = LocalDate.fromCalendarFields(calendar);
+        DateTime dateTime = null;
         return new DateFieldsType(javaDateField, localDate, dateTime, calendar);
     }
 }

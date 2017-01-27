@@ -1,10 +1,6 @@
 package wintermock;
 
-import static org.lazyluke.wintermock.StubbingHelper.getObjectMapper;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
 import org.junit.Assert;
 import org.junit.Test;
 import org.lazyluke.wintermock.jackson.GenericKeyJacksonModule;
@@ -33,7 +29,7 @@ public class RoundTripTest {
     }
 
     private ObjectMapper getObjectMapper() {
-        ObjectMapper mapper = SimpleObjectMapperFactory.createObjectMapper();
+        ObjectMapper mapper = SimpleObjectMapperFactory.getInstance();
         mapper.registerModule(new GenericKeyJacksonModule(Person.class, mapper));
         return mapper;
     }
