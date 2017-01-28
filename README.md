@@ -25,9 +25,9 @@ A tool to do whatever...
 
 To blah:
 
-```
+``
     Blah.testMethod(Param.class);
-```
+``
 
 
 ##Best Practice
