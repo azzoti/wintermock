@@ -1,11 +1,7 @@
-package wintermock;
+package org.lazyluke.wintermock;
 
-import wintermock.testclasses.ComplexType;
-import wintermock.testclasses.Person;
-
-import java.util.List;
-import java.util.Map;
-
+import org.lazyluke.wintermock.testclasses.ComplexType;
+import org.lazyluke.wintermock.testclasses.Person;
 public interface InterfaceToMock {
 
 //    String simpleFunctionWithoutParametersReturningString();

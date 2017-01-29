@@ -1,25 +1,20 @@
-package wintermock;
+package org.lazyluke.wintermock;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
-import static java.util.Arrays.asList;
 
 import java.util.List;
-import java.util.Map;
-import org.junit.Assert;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.lazyluke.wintermock.CucumberSupport;
-import org.lazyluke.wintermock.FunctionCall;
-import org.lazyluke.wintermock.FunctionCalls;
 import org.lazyluke.wintermock.jackson.GenericKeyJacksonModule;
 import org.lazyluke.wintermock.jackson.SimpleObjectMapperFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.ConfigurableEnvironment;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
-import wintermock.testclasses.ComplexType;
-import wintermock.testclasses.Person;
+import org.lazyluke.wintermock.testclasses.ComplexType;
+import org.lazyluke.wintermock.testclasses.Person;
 
 public class RecordTest {
 
@@ -29,17 +24,30 @@ public class RecordTest {
         return mapper;
     }
 
-    private WireMockServer wireMockServer;
+    private static WireMockServer wireMockServer;
 
-
-    public void start() {
+    @BeforeClass
+    public static void start() throws InterruptedException {
         wireMockServer = new WireMockServer(wireMockConfig());
         wireMockServer.start();
+        Thread.sleep(1000);
+    }
+
+    @AfterClass
+    public static void stop() throws InterruptedException {
+        wireMockServer.shutdown();
+        Thread.sleep(1000);
+    }
+
+
+    @Before
+    public void before() throws InterruptedException {
+        wireMockServer.resetAll();
+        Thread.sleep(1000);
     }
 
     @Test
     public void testRecordAllInOneGo() throws Exception {
-        start();
         SimpleObjectMapperFactory.registerModule(new GenericKeyJacksonModule<>(Person.class, SimpleObjectMapperFactory.getInstance()));
         ComplexType complexType = TestDataMaker.newComplexType();
         System.out.println(getObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(complexType));
@@ -47,14 +55,14 @@ public class RecordTest {
         String stringParam = "Boss's \"favourite\" employee";
         String functionName = "pureFunctionReturningComplexType";
 
-        // FunctionCall.create(functionName, "Boss", returning);
-
         Person person = new InterfaceToMockStubRecordingImplementation().pureFunctionReturningComplexType(stringParam, true, complexType);
 
         List<StubMapping> mappings = WireMock.listAllStubMappings().getMappings();
         for (StubMapping mapping : mappings) {
-            System.out.println(mapping.getRequest().getBodyPatterns().get(0).getExpected());
-            System.out.println(mapping.getResponse().getBody());
+            // FunctionCall.create(functionName, "Boss", returning);
+            System.out.println("FunctionCall.create(\"" + getFunctionNameFromWiremockUrlPath(mapping.getRequest().getUrlPattern()) + "\", ");
+            System.out.println("    Parameter1:\n    " + mapping.getRequest().getBodyPatterns().get(0).getExpected());
+            System.out.println("    Parameter2:\n    " + mapping.getResponse().getBody());
 
         }
 
@@ -64,5 +72,9 @@ public class RecordTest {
             e1.printStackTrace();
         }
 
+    }
+
+    private String getFunctionNameFromWiremockUrlPath(String urlPath) {
+        return urlPath.replaceAll("/", "");
     }
 }

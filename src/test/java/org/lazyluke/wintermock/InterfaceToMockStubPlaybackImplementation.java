@@ -1,9 +1,10 @@
-package wintermock;
+package org.lazyluke.wintermock;
 
 import static org.lazyluke.wintermock.FunctionCallParameters.params;
 
-import wintermock.testclasses.ComplexType;
-import wintermock.testclasses.Person;
+import org.lazyluke.wintermock.testclasses.ComplexType;
+import org.lazyluke.wintermock.testclasses.Person;
+import org.lazyluke.wintermock.wintermock.BaseStubImpl;
 
 public class InterfaceToMockStubPlaybackImplementation extends BaseStubImpl implements InterfaceToMock {
     public Person pureFunctionReturningComplexType(String stringParam, boolean primitiveBooleanParam, ComplexType c1) {

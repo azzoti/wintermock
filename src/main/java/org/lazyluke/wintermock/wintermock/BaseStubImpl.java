@@ -1,4 +1,4 @@
-package wintermock;
+package org.lazyluke.wintermock.wintermock;
 
 import org.lazyluke.wintermock.FunctionCallParameters;
 import org.lazyluke.wintermock.FunctionCallsManager;

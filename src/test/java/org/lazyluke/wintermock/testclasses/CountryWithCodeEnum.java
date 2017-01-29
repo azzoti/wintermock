@@ -1,4 +1,4 @@
-package wintermock.testclasses;
+package org.lazyluke.wintermock.testclasses;
 
 public enum CountryWithCodeEnum {
     UNITED_KINGDOM("GBR"), UNITED_STATES("USA"), FRANCE("FRA");

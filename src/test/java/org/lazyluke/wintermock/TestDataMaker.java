@@ -1,8 +1,8 @@
-package wintermock;
+package org.lazyluke.wintermock;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import wintermock.testclasses.*;
+import org.lazyluke.wintermock.testclasses.*;
 
 import java.math.BigDecimal;
 import java.util.*;

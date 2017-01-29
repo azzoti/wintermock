@@ -1,4 +1,4 @@
-package wintermock.testclasses;
+package org.lazyluke.wintermock.testclasses;
 
 import java.util.List;
 import java.util.Map;

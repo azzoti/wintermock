@@ -1,12 +1,13 @@
-package wintermock;
+package org.lazyluke.wintermock;
+
+import static org.junit.Assert.assertEquals;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
 import org.junit.Test;
 import org.lazyluke.wintermock.jackson.GenericKeyJacksonModule;
 import org.lazyluke.wintermock.jackson.SimpleObjectMapperFactory;
-import wintermock.testclasses.ComplexType;
-import wintermock.testclasses.Person;
+import org.lazyluke.wintermock.testclasses.ComplexType;
+import org.lazyluke.wintermock.testclasses.Person;
 
 public class RoundTripTest {
     @Test
@@ -23,7 +24,7 @@ public class RoundTripTest {
 
         String rebuiltOriginalObjectAsJsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(rebuiltOriginalObjectFromJsonString);
 
-        Assert.assertEquals(originalObjectAsJsonString, rebuiltOriginalObjectAsJsonString);
+        assertEquals(originalObjectAsJsonString, rebuiltOriginalObjectAsJsonString);
 
 
     }
@@ -35,12 +36,19 @@ public class RoundTripTest {
     }
 
     @Test
-    public void name() throws Exception {
+    public void Test_GivenARealImplementation_WhenTheRealImplementationIsCalled_ThenItDoesSomethingSensible() throws Exception {
 
         ObjectMapper mapper = getObjectMapper();
         ComplexType originalObject = TestDataMaker.newComplexType();
         Person person = new InterfaceToMockRealImplementation().pureFunctionReturningComplexType("Boss's \"favourite\" employee", true, originalObject);
-        System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(person));
+        String actual = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(person);
+        System.out.println(actual);
+        assertEquals("{\n" +
+                "  \"name\" : \"Joan Collins\",\n" +
+                "  \"age\" : 91,\n" +
+                "  \"eyeColor\" : \"RED\",\n" +
+                "  \"nationality\" : \"FRANCE\"\n" +
+                "}", actual);
 
     }
 

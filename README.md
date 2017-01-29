@@ -1,8 +1,8 @@
 WinterMock
 ==========
 
-[![Build Status](https://travis-ci.org/azzoti/wintermock.svg?branch=master)](https://travis-ci.org/azzoti/wintermock)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.lazyluke/wintermock/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.lazyluke/wintermock)
+[![Build Status](https://travis-ci.org/azzoti/org.lazyluke.wintermock.wintermock.svg?branch=master)](https://travis-ci.org/azzoti/org.lazyluke.wintermock.wintermock)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.lazyluke/org.lazyluke.wintermock.wintermock/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.lazyluke/org.lazyluke.wintermock.wintermock)
 
 A tool to do whatever...
 
@@ -39,4 +39,4 @@ You should ...
 ##Issues
 
 Please ensure you are running the latest release of WinterMock before logging an issue.
-If the problem still persists, please log an issue at https://github.com/azzoti/wintermock/issues including a sample that demonstrates the defect.
+If the problem still persists, please log an issue at https://github.com/azzoti/org.lazyluke.wintermock.wintermock/issues including a sample that demonstrates the defect.
