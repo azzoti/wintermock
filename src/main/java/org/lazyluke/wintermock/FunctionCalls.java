@@ -1,7 +1,6 @@
 package org.lazyluke.wintermock;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.getAllServeEvents;
-import static java.util.Arrays.asList;
 import static org.lazyluke.wintermock.StubbingHelper.convertJsonStringToObjectOfClass;
 import static org.lazyluke.wintermock.ToJavaString.replaceDateTimesWithAnyMatch;
 import static org.lazyluke.wintermock.ToJavaString.replaceDoubleQuoteWithSingle;
@@ -20,7 +19,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
+import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import wiremock.com.google.common.base.Function;
 import wiremock.com.google.common.collect.Lists;
 
@@ -62,12 +63,6 @@ public final class FunctionCalls implements Serializable {
     public <T> T addFunctionCall(String functionName, FunctionCallParameters parameters, T returnValue) {
         FunctionCall.record(functionName, parameters, returnValue);
         return returnValue;
-    }
-
-    public static FunctionCalls createForPlayback(FunctionCall... calls) {
-        FunctionCalls functionCalls = new FunctionCalls();
-        functionCalls.calls = new LinkedList<>(asList(calls));
-        return functionCalls;
     }
 
     public static List<String> containsMatchingCall(String functionName, int callInstance, Map<String, String> parameterExpressionMap, Map<String, String> returnExpressionMap) {
@@ -158,4 +153,23 @@ public final class FunctionCalls implements Serializable {
                 replaceDoubleQuoteWithSingle);
     }
 
+    public static void createCodeAndFilesFromRecordedCalls() {
+        List<StubMapping> mappings = WireMock.listAllStubMappings().getMappings();
+        for (StubMapping mapping : mappings) {
+            // FunctionCall.create(functionName, "Boss", returning);
+            System.out.println("FunctionCall.create(\"" + getFunctionNameFromWiremockUrlPath(mapping.getRequest().getUrlPattern()) + "\", ");
+            String functionParametersAsJsonString = mapping.getRequest().getBodyPatterns().get(0).getExpected();
+            System.out.println("    Parameter1:\n    " + functionParametersAsJsonString);
+            String functionReturnAsJsonString = mapping.getResponse().getBody();
+            System.out.println("    Parameter2:\n    " + functionReturnAsJsonString);
+            System.out.println(");");
+        }
+    }
+
+
+
+
+    private static String getFunctionNameFromWiremockUrlPath(String urlPath) {
+        return urlPath.replaceAll("/", "");
+    }
 }

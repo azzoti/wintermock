@@ -57,24 +57,14 @@ public class RecordTest {
 
         Person person = new InterfaceToMockStubRecordingImplementation().pureFunctionReturningComplexType(stringParam, true, complexType);
 
-        List<StubMapping> mappings = WireMock.listAllStubMappings().getMappings();
-        for (StubMapping mapping : mappings) {
-            // FunctionCall.create(functionName, "Boss", returning);
-            System.out.println("FunctionCall.create(\"" + getFunctionNameFromWiremockUrlPath(mapping.getRequest().getUrlPattern()) + "\", ");
-            System.out.println("    Parameter1:\n    " + mapping.getRequest().getBodyPatterns().get(0).getExpected());
-            System.out.println("    Parameter2:\n    " + mapping.getResponse().getBody());
+        FunctionCalls.createCodeAndFilesFromRecordedCalls();
 
-        }
-
-        try {
-            Thread.sleep(1000000);
-        } catch (InterruptedException e1) {
-            e1.printStackTrace();
-        }
+        //try {
+        //    Thread.sleep(1000000);
+        //} catch (InterruptedException e1) {
+        //    e1.printStackTrace();
+        //}
 
     }
 
-    private String getFunctionNameFromWiremockUrlPath(String urlPath) {
-        return urlPath.replaceAll("/", "");
-    }
 }

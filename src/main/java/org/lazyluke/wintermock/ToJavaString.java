@@ -7,7 +7,9 @@ public final class ToJavaString {
 
     public static final String UUID_REGEX = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
 
-    public static String getJavaString(List<FunctionCall> calls, Function<String, String> stringConverterForExpectedParametersRegexAsJsonString, Function<String, String> stringConverterForReturnValueAsJsonString) {
+    public static String getJavaString(List<FunctionCall> calls,
+       Function<String, String> stringConverterForExpectedParametersRegexAsJsonString,
+       Function<String, String> stringConverterForReturnValueAsJsonString) {
         final StringBuilder sb = new StringBuilder("FunctionCalls.create(").append(System.lineSeparator());
 
         for (Iterator<FunctionCall> iterator = calls.iterator(); iterator.hasNext(); ) {
