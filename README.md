@@ -4,7 +4,7 @@ WinterMock
 [![Build Status](https://travis-ci.org/azzoti/wintermock.svg?branch=master)](https://travis-ci.org/azzoti/wintermock)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.lazyluke/wintermock/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.lazyluke/wintermock)
 
-A tool to ...
+A tool to do whatever...
 
 
 ##Features
@@ -25,9 +25,9 @@ A tool to ...
 
 To blah:
 
-```
+``
     Blah.testMethod(Param.class);
-```
+``
 
 
 ##Best Practice
