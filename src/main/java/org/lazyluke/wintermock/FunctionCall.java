@@ -10,7 +10,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static org.lazyluke.wintermock.StubbingHelper.getAsJsonString;
 
 import java.io.Serializable;
-import wiremock.com.google.common.base.Function;
 
 public final class FunctionCall implements Serializable {
 
@@ -36,7 +35,6 @@ public final class FunctionCall implements Serializable {
                 .willReturn(aResponse().withStatus(204)));
 
     }
-
 
 
     // TODO initally rename "expect"
@@ -74,17 +72,6 @@ public final class FunctionCall implements Serializable {
                 .replaceAll("\\[", "\\\\[")
                 .replaceAll("]", "\\\\]")
                 ;
-    }
-
-    /**
-     @deprecated
-     */
-    public String toJavaString(Function<String, String> stringConverterForExpectedParametersRegexAsJsonString, Function<String, String> stringConverterForReturnValueAsJsonString) {
-        final StringBuilder sb = new StringBuilder("FunctionCall.create(\"");
-        //sb.append(functionCalled).append("\", \"");
-        //sb.append(stringConverterForExpectedParametersRegexAsJsonString.apply(functionParameters)).append("\", \"");
-        //sb.append(stringConverterForReturnValueAsJsonString.apply(functionReturn)).append("\"),");
-        return sb.toString();
     }
 
 }
