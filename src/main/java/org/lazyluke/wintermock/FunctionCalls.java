@@ -2,17 +2,9 @@ package org.lazyluke.wintermock;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.getAllServeEvents;
 import static org.lazyluke.wintermock.StubbingHelper.convertJsonStringToObjectOfClass;
-import static org.lazyluke.wintermock.ToJavaString.replaceDateTimesWithAnyMatch;
-import static org.lazyluke.wintermock.ToJavaString.replaceDoubleQuoteWithSingle;
-import static org.lazyluke.wintermock.ToJavaString.replaceDoubleQuotedXmlWithAnyMatch;
-import static org.lazyluke.wintermock.ToJavaString.replaceIDsWithAnyMatch;
-import static org.lazyluke.wintermock.ToJavaString.replaceQuotedAsteriskWithLiteralAsterisk;
-import static org.lazyluke.wintermock.ToJavaString.replaceUUIDsWithAnyMatch;
-import static wiremock.com.google.common.base.Functions.compose;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpEntity;
@@ -22,12 +14,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
-import wiremock.com.google.common.base.Function;
 import wiremock.com.google.common.collect.Lists;
 
 public final class FunctionCalls implements Serializable {
-
-    private LinkedList<FunctionCall> calls = new LinkedList<>();
 
     public static <T> T checkNextExpectedCallAndReturn(String functionName, FunctionCallParameters actualFunctionParameters, Class<T> classOfReturn) {
 
@@ -56,11 +45,11 @@ public final class FunctionCalls implements Serializable {
 
 
 
-    public void addFunctionCall(String functionName, FunctionCallParameters parameters) {
+    public static void addFunctionCall(String functionName, FunctionCallParameters parameters) {
         FunctionCall.record(functionName, parameters);
     }
 
-    public <T> T addFunctionCall(String functionName, FunctionCallParameters parameters, T returnValue) {
+    public static <T> T addFunctionCall(String functionName, FunctionCallParameters parameters, T returnValue) {
         FunctionCall.record(functionName, parameters, returnValue);
         return returnValue;
     }
@@ -133,41 +122,34 @@ public final class FunctionCalls implements Serializable {
         return count;
     }
 
-    public String toJavaString() {
+    //private static String toJavaString(List<FunctionCall> calls, Function<String, String> stringConverterForExpectedParametersRegexAsJsonString, Function<String, String> stringConverterForReturnValueAsJsonString) {
+    //
+    //    return ToJavaString.getJavaString(calls, stringConverterForExpectedParametersRegexAsJsonString, stringConverterForReturnValueAsJsonString);
+    //}
 
-        return toJavaString(this.calls);
-    }
+    //private static String toJavaString(List<FunctionCall> calls) {
+    //    return toJavaString(
+    //            calls, compose(replaceQuotedAsteriskWithLiteralAsterisk,
+    //                    compose(replaceIDsWithAnyMatch,
+    //                            compose(replaceDateTimesWithAnyMatch,
+    //                                    compose(replaceUUIDsWithAnyMatch,
+    //                                            compose(replaceDoubleQuoteWithSingle, replaceDoubleQuotedXmlWithAnyMatch))))),
+    //            replaceDoubleQuoteWithSingle);
+    //}
 
-    private static String toJavaString(List<FunctionCall> calls, Function<String, String> stringConverterForExpectedParametersRegexAsJsonString, Function<String, String> stringConverterForReturnValueAsJsonString) {
-
-        return ToJavaString.getJavaString(calls, stringConverterForExpectedParametersRegexAsJsonString, stringConverterForReturnValueAsJsonString);
-    }
-
-    private static String toJavaString(List<FunctionCall> calls) {
-        return toJavaString(
-                calls, compose(replaceQuotedAsteriskWithLiteralAsterisk,
-                        compose(replaceIDsWithAnyMatch,
-                                compose(replaceDateTimesWithAnyMatch,
-                                        compose(replaceUUIDsWithAnyMatch,
-                                                compose(replaceDoubleQuoteWithSingle, replaceDoubleQuotedXmlWithAnyMatch))))),
-                replaceDoubleQuoteWithSingle);
-    }
-
-    public static void createCodeAndFilesFromRecordedCalls() {
+    public static String createCodeAndFilesFromRecordedCalls() {
         List<StubMapping> mappings = WireMock.listAllStubMappings().getMappings();
+        StringBuilder sb = new StringBuilder();
         for (StubMapping mapping : mappings) {
-            // FunctionCall.create(functionName, "Boss", returning);
-            System.out.println("FunctionCall.create(\"" + getFunctionNameFromWiremockUrlPath(mapping.getRequest().getUrlPattern()) + "\", ");
+            sb.append("FunctionCall.create(\"" + getFunctionNameFromWiremockUrlPath(mapping.getRequest().getUrlPattern()) + "\", ");
             String functionParametersAsJsonString = mapping.getRequest().getBodyPatterns().get(0).getExpected();
-            System.out.println("    Parameter1:\n    " + functionParametersAsJsonString);
+            sb.append("    Parameter1:\n    " + functionParametersAsJsonString);
             String functionReturnAsJsonString = mapping.getResponse().getBody();
-            System.out.println("    Parameter2:\n    " + functionReturnAsJsonString);
-            System.out.println(");");
+            sb.append("    Parameter2:\n    " + functionReturnAsJsonString);
+            sb.append(");");
         }
+        return sb.toString();
     }
-
-
-
 
     private static String getFunctionNameFromWiremockUrlPath(String urlPath) {
         return urlPath.replaceAll("/", "");
