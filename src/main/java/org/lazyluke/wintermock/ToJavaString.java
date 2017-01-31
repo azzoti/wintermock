@@ -87,4 +87,31 @@ public final class ToJavaString {
     //        return (input == null) ? "" : input.replaceAll("\"<.xml.*?[^\\\\]\"", "\".*?\"");
     //    }
     //};
+
+    ///**
+    // @deprecated
+    // */
+    //public String toJavaString(Function<String, String> stringConverterForExpectedParametersRegexAsJsonString, Function<String, String> stringConverterForReturnValueAsJsonString) {
+    //    final StringBuilder sb = new StringBuilder("FunctionCall.create(\"");
+    //    //sb.append(functionCalled).append("\", \"");
+    //    //sb.append(stringConverterForExpectedParametersRegexAsJsonString.apply(functionParameters)).append("\", \"");
+    //    //sb.append(stringConverterForReturnValueAsJsonString.apply(functionReturn)).append("\"),");
+    //    return sb.toString();
+    //}
+
+    //private static String toJavaString(List<FunctionCall> calls, Function<String, String> stringConverterForExpectedParametersRegexAsJsonString, Function<String, String> stringConverterForReturnValueAsJsonString) {
+    //
+    //    return ToJavaString.getJavaString(calls, stringConverterForExpectedParametersRegexAsJsonString, stringConverterForReturnValueAsJsonString);
+    //}
+
+    //private static String toJavaString(List<FunctionCall> calls) {
+    //    return toJavaString(
+    //            calls, compose(replaceQuotedAsteriskWithLiteralAsterisk,
+    //                    compose(replaceIDsWithAnyMatch,
+    //                            compose(replaceDateTimesWithAnyMatch,
+    //                                    compose(replaceUUIDsWithAnyMatch,
+    //                                            compose(replaceDoubleQuoteWithSingle, replaceDoubleQuotedXmlWithAnyMatch))))),
+    //            replaceDoubleQuoteWithSingle);
+    //}
+
 }
