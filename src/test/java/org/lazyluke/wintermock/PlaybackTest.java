@@ -81,13 +81,13 @@ public class PlaybackTest {
         Map<String, String> parameterExpressionMap = CucumberSupport.getExpressionMapFromTable(table, CucumberSupport.PARAMETER, ".*", true);
         Map<String, String> returnExpressionMap = CucumberSupport.getExpressionMapFromTable(table, CucumberSupport.RETURNING, ".*", true);
 
-        List<String> errors = FunctionCalls.containsMatchingCall(functionName, -1, parameterExpressionMap, returnExpressionMap);
+        List<String> errors = FunctionCall.containsMatchingCall(functionName, -1, parameterExpressionMap, returnExpressionMap);
         for (String error : errors) {
             System.out.println(error);
         }
 
         Assert.assertEquals(0, errors.size());
-        Assert.assertEquals(1, FunctionCalls.getNumberOfTimesCalled(functionName));
+        Assert.assertEquals(1, FunctionCall.getNumberOfTimesCalled(functionName));
 
         //try {
         //    Thread.sleep(1000000);

@@ -57,7 +57,7 @@ public class RecordTest {
 
         Person person = new InterfaceToMockStubRecordingImplementation().pureFunctionReturningComplexType(stringParam, true, complexType);
 
-        FunctionCalls.createCodeAndFilesFromRecordedCalls();
+        FunctionCall.createCodeAndFilesFromRecordedCalls();
 
         //try {
         //    Thread.sleep(1000000);
