@@ -4,39 +4,48 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.getAllServeEvents;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
-import static org.lazyluke.wintermock.StubbingHelper.getAsJsonString;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
+import com.github.tomakehurst.wiremock.verification.NearMiss;
 import wiremock.com.google.common.collect.Lists;
 
 public final class FunctionCall implements Serializable {
 
-    public static final String RECORDED = "/recorded/";
+    private static final String RECORDED = "/recorded/";
 
-    public static void record(String nameOfTheFunctionCalled, FunctionCallParameters regExToMatchFunctionParametersSerializedAsJson, Object functionReturnAsJsonString) {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FunctionCall.class);
+
+
+    public static void record(String functionName, FunctionCallParameters regExToMatchFunctionParametersSerializedAsJson, Object functionReturnAsJsonString) {
 
         String jsonReturn = functionReturnAsJsonString instanceof String ? (String) functionReturnAsJsonString : StubbingHelper.getAsJsonString(functionReturnAsJsonString);
 
         // TODO parameters.getStringRepresentationOfParameters() is BEFORE delegate call
         // TODO parameters.getParameters() has parameters after call - may not have the same StringRepresentationOfParameters AFTER call for IMPURE FUNCTION
-        stubFor(post(urlMatching(RECORDED + nameOfTheFunctionCalled))
+        stubFor(post(urlMatching(RECORDED + functionName))
                 .withRequestBody(equalTo(regExToMatchFunctionParametersSerializedAsJson.getStringRepresentationOfParameters()))
                 .willReturn(aResponse().withBody(jsonReturn).withStatus(200)));
-
     }
 
     public static void record(String functionName, FunctionCallParameters parameters) {
@@ -46,9 +55,7 @@ public final class FunctionCall implements Serializable {
         stubFor(post(urlMatching(RECORDED + functionName))
                 .withRequestBody(equalToJson(parameters.getStringRepresentationOfParameters()))
                 .willReturn(aResponse().withStatus(204)));
-
     }
-
 
     // TODO initally rename "expect"
     // TODO then provide mockito style alternative when X.y then return X
@@ -66,13 +73,7 @@ public final class FunctionCall implements Serializable {
         }
         stubFor(post(urlMatching("/" + nameOfTheFunctionCalled)).withRequestBody(matching(escapeJsonForRegex)).willReturn(
                 aResponse().withBody(functionReturnAsJsonString).withStatus(201)));
-
     }
-
-
-
-
-
 
     public static String replaceSingleQuoteWithDouble(String s) {
         return (s == null) ? "" : s.replace('\'', '"');
@@ -93,42 +94,81 @@ public final class FunctionCall implements Serializable {
         for (StubMapping mapping : mappings) {
             sb.append("FunctionCall.create(\"" + getFunctionNameFromWiremockUrlPath(mapping.getRequest().getUrlPattern()) + "\", ");
             String functionParametersAsJsonString = mapping.getRequest().getBodyPatterns().get(0).getExpected();
-            sb.append("    Parameter1:\n    " + functionParametersAsJsonString);
+            sb.append("\n    Parameter1:\n    " + functionParametersAsJsonString);
             String functionReturnAsJsonString = mapping.getResponse().getBody();
-            sb.append("    Parameter2:\n    " + functionReturnAsJsonString);
-            sb.append(");");
+            sb.append("\n    Parameter2:\n    " + functionReturnAsJsonString);
+            sb.append("\n);\n");
         }
+        //try {
+        //    Thread.sleep(100000);
+        //} catch (InterruptedException e) {
+        //    e.printStackTrace();
+        //}
         return sb.toString();
     }
 
     private static String getFunctionNameFromWiremockUrlPath(String urlPath) {
-        return urlPath.replaceAll("/recorded/", "");
+        return urlPath.replaceAll(RECORDED, "").replace("/", "");
     }
 
     public static <T> T checkNextExpectedCallAndReturn(String functionName, FunctionCallParameters actualFunctionParameters, Class<T> classOfReturn) {
 
         // WireMockServer wireMockServer = new WireMockServer(options().port(8080)); //No-args constructor will start on port 8080, no HTTPS
 
-        HttpEntity<String> request = new HttpEntity<>(actualFunctionParameters.getStringRepresentationOfParameters(), new HttpHeaders());
-        String response = new RestTemplate().postForObject(StubbingHelper.WIREMOCK_URL + functionName, request, String.class);
-        // TODO log?
-        System.out.println(response);
+        String body = actualFunctionParameters.getStringRepresentationOfParameters();
+        HttpEntity<String> request = new HttpEntity<>(body, new HttpHeaders());
+        String response = null;
+        try {
+            response = new RestTemplate().postForObject(StubbingHelper.WIREMOCK_URL + functionName, request, String.class);
+        } catch (RestClientException e) {
+            handleErrorsShowNearMisses(functionName, body, e);
+        }
 
         T ret = (classOfReturn == String.class) ? (T) response : StubbingHelper.convertJsonStringToObjectOfClass(response, classOfReturn);
 
         return ret;
     }
 
-    public static  <T> T checkNextExpectedCallAndReturn(String functionName, FunctionCallParameters actualFunctionParameters, TypeReference<T> typeRefOfReturn) {
+    public static <T> T checkNextExpectedCallAndReturn(String functionName, FunctionCallParameters actualFunctionParameters, TypeReference<T> typeRefOfReturn) {
 
-        HttpEntity<String> request = new HttpEntity<>(actualFunctionParameters.getStringRepresentationOfParameters(), new HttpHeaders());
-        String response = new RestTemplate().postForObject(StubbingHelper.WIREMOCK_URL + functionName, request, String.class);
-        // TODO log?
-        System.out.println(response);
+        String body = actualFunctionParameters.getStringRepresentationOfParameters();
+        HttpEntity<String> request = new HttpEntity<>(body, new HttpHeaders());
+        String response = null;
+        try {
+            response = new RestTemplate().postForObject(StubbingHelper.WIREMOCK_URL + functionName, request, String.class);
+        } catch (RestClientException e) {
+            handleErrorsShowNearMisses(functionName, body, e);
+        }
 
         T ret = StubbingHelper.fromJSON(typeRefOfReturn, response);
         return ret;
     }
+
+    private static void handleErrorsShowNearMisses(String functionName, String body, RestClientException e) {
+        if (e instanceof HttpClientErrorException) {
+            HttpClientErrorException httpClientErrorException = (HttpClientErrorException) e;
+            if (httpClientErrorException.getStatusCode() == HttpStatus.NOT_FOUND) {
+                List<NearMiss> nearMisses = WireMock.findNearMissesFor(getRequestedFor(urlEqualTo("/" + functionName)).withRequestBody(equalTo(body)));
+                if (nearMisses.size() <= 0) {
+                    LOGGER.error("\n\n**** No 'near misses' found to match call to " + functionName  + " with request: " + body);
+                    throw e;
+                }
+                LOGGER.error("\n\n**** Found one of more 'near misses' matching call " + functionName  + " with request: " + body);
+                for (NearMiss nearMiss : nearMisses) {
+                    String url = nearMiss.getRequest().getUrl().replaceFirst("/","");
+                    LOGGER.error("\n\n**** Closest match " + url + " " + nearMiss.getRequest().getBodyAsString());
+                    //StringValuePattern stringValuePattern = nearMiss.getStubMapping().getRequest().getBodyPatterns().get(0);
+                    //LOGGER.error("\n\n**** Closest match " + url + " " + stringValuePattern.toString());
+                }
+            } else {
+                throw new IllegalStateException("Unexpected http status", e);
+            }
+        } else {
+            // not sure what this is so rethrow
+            throw e;
+        }
+    }
+
 
     public static List<String> containsMatchingCall(String functionName, int callInstance, Map<String, String> parameterExpressionMap, Map<String, String> returnExpressionMap) {
         List<ServeEvent> allServeEvents = getAllServeEvents();
@@ -197,5 +237,4 @@ public final class FunctionCall implements Serializable {
         }
         return count;
     }
-
 }
