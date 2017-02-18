@@ -1,7 +1,7 @@
 WinterMock
 ==========
 
-[![Build Status](https://travis-ci.org/azzoti/org.lazyluke.wintermock.wintermock.svg?branch=master)](https://travis-ci.org/azzoti/org.lazyluke.wintermock.wintermock)
+[![Build Status](https://api.travis-ci.org/azzoti/wintermock.svg?branch=master)](https://travis-ci.org/azzoti/org.lazyluke.wintermock.wintermock)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.lazyluke/org.lazyluke.wintermock.wintermock/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.lazyluke/org.lazyluke.wintermock.wintermock)
 
 A tool to do whatever...
