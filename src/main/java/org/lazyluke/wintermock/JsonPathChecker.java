@@ -12,6 +12,7 @@ import net.minidev.json.JSONArray;
 
 public class JsonPathChecker {
 
+    private static final String NULL_STRING = "null";
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonPathChecker.class);
     public static final String VALUE_KEYWORD = "value";
     public static final String JSON_PATH_ROOT_ELEMENT = "$";
@@ -29,22 +30,27 @@ public class JsonPathChecker {
 
             Object jsonPathReadResult = JsonPath.read(document, modifiedJsonPathExpression);
             Object matchedElement;
+            String expectedValue = parameterExpressionMap.get(jsonPathExpression);
+
             if (jsonPathReadResult instanceof JSONArray) {
                 JSONArray jsonArray = (JSONArray) jsonPathReadResult;
                 List<Object> nonNullJsonArray = getAsNonNullList(jsonArray);
-                if (nonNullJsonArray.size() == 0) {
+                if (nonNullJsonArray.size() == 0 && !expectedValue.equals(NULL_STRING)) {
                     LOGGER.info("No match for {} in {}", modifiedJsonPathExpression, json);
                     return false;
                 }
                 checkMoreThanOneElementAndThrow(json, jsonPathExpression, nonNullJsonArray);
-                matchedElement = nonNullJsonArray.get(0);
+                if(expectedValue.equals(NULL_STRING)){
+                    matchedElement = null;
+                } else {
+                    matchedElement = nonNullJsonArray.get(0);
+                }
             } else {
                 matchedElement = jsonPathReadResult;
             }
 
-            String expectedValue = parameterExpressionMap.get(jsonPathExpression);
             if (matchedElement == null) {
-                if (!expectedValue.equals("null")) {
+                if (!expectedValue.equals(NULL_STRING)) {
                     logNoMatch(modifiedJsonPathExpression, matchedElement, expectedValue);
                     return false;
                 }
