@@ -1,4 +1,4 @@
-package wintermock.testclasses;
+package org.lazyluke.wintermock.testclasses;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;

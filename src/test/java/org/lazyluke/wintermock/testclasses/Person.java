@@ -1,4 +1,4 @@
-package wintermock.testclasses;
+package org.lazyluke.wintermock.testclasses;
 
 public class Person {
 

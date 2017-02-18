@@ -1,7 +1,7 @@
-package wintermock;
+package org.lazyluke.wintermock;
 
-import wintermock.testclasses.ComplexType;
-import wintermock.testclasses.Person;
+import org.lazyluke.wintermock.testclasses.ComplexType;
+import org.lazyluke.wintermock.testclasses.Person;
 
 public class InterfaceToMockRealImplementation implements InterfaceToMock {
     public Person pureFunctionReturningComplexType(String stringParam, boolean primitiveBooleanParam, ComplexType c1) {

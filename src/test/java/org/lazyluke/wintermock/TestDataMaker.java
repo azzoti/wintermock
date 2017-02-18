@@ -1,8 +1,8 @@
-package wintermock;
+package org.lazyluke.wintermock;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import wintermock.testclasses.*;
+import org.lazyluke.wintermock.testclasses.*;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -10,7 +10,7 @@ import java.util.*;
 public class TestDataMaker {
 
 
-    static ComplexType newComplexType() {
+    public static ComplexType newComplexType() {
         BasicFieldsType basicFields = newBasicFieldsType();
         DateFieldsType dateFields = newDateFields();
         List<String> stringList = newStringList();
@@ -88,10 +88,10 @@ public class TestDataMaker {
     private static BasicFieldsType newBasicFieldsType() {
         return new BasicFieldsType(Integer.MAX_VALUE, Integer.MIN_VALUE,
                 "A String {value} with embedded json [characters] in it ",
-                false, true, 1.1d, 1.2d, BigDecimal.TEN);
+                false, true, Double.MAX_VALUE, Double.MIN_VALUE, BigDecimal.TEN.setScale(2, BigDecimal.ROUND_HALF_UP));
     }
 
-    private static Person newPerson(String personName, int age, ColorSimpleEnum eyeColor, CountryWithCodeEnum nationality) {
+    public static Person newPerson(String personName, int age, ColorSimpleEnum eyeColor, CountryWithCodeEnum nationality) {
         return new Person(personName, age, eyeColor, nationality);
     }
 
@@ -99,8 +99,8 @@ public class TestDataMaker {
         Calendar calendar = new GregorianCalendar(2013, 1, 28, 13, 24, 56);
         calendar.set(Calendar.MILLISECOND, 123456);
         Date javaDateField = new Date(calendar.getTimeInMillis());
-        LocalDate localDate = LocalDate.now();
-        DateTime dateTime = DateTime.now();
+        LocalDate localDate = LocalDate.fromCalendarFields(calendar);
+        DateTime dateTime = null;
         return new DateFieldsType(javaDateField, localDate, dateTime, calendar);
     }
 }

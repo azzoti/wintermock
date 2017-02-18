@@ -1,4 +1,4 @@
-package wintermock.extras;
+package org.lazyluke.wintermock.jackson;
 
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.KeyDeserializer;
